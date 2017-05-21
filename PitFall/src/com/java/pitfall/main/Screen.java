@@ -19,11 +19,12 @@ public class Screen extends JFrame implements Constants, Runnable, KeyListener{
 	private Thread th1;
 	private DefaultStage stage;
 	static Stage1 stageOne;
+	static Stage2 stageTwo;
 	private Image img; //Concertar bug da tela piscando
 	private Graphics gfx;
 	static Character player;
 	private Collisions collisions;
-	public int colid;
+	public int points;
 	public Screen() {
 
 	}
@@ -40,12 +41,13 @@ public class Screen extends JFrame implements Constants, Runnable, KeyListener{
 		this.stage2 = false;
 		this.stage3 = false;
 		img =createImage(WIDTH_SCREEN, HEIGTH_SCREEN);
-		this.colid = 0;
+		this.points = 0;
 		collisions = new Collisions();
 		gfx = img.getGraphics();
 		player = new Character();
 		stage = new DefaultStage();
 		stageOne = new Stage1();
+		stageTwo = new Stage2();
 		this.addKeyListener(this);
 		th1 = new Thread(this);
 		th1.start();
@@ -57,9 +59,11 @@ public class Screen extends JFrame implements Constants, Runnable, KeyListener{
 		super.paint(gfx);
 		stage.paint(gfx); //desenha fase
 		player.paint(gfx);
-		gfx.drawString("Colisões - " + colid  , 50, 600);
+		collisions.paint(gfx);
 		if(stage1){
 			stageOne.paint(gfx);
+		}else if(stage2){
+			stageTwo.paint(gfx);
 		}
 		g.drawImage(img, 0, 0, this);  //Corrigir bug da tela piscando
 
@@ -75,6 +79,8 @@ public class Screen extends JFrame implements Constants, Runnable, KeyListener{
 			player.changeStage();
 			checkStage();
 			collisions.checkCollision();
+			if(stage2)
+				stageTwo.moveCorda();
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
@@ -98,9 +104,14 @@ public class Screen extends JFrame implements Constants, Runnable, KeyListener{
 			stage1 = false;
 		if(stageNum == 0)
 			stage1 = false;
+		else if(stageNum == 2)
+			stage2 = true;
+		else if(stageNum != 2)
+			stage2 = false;
 		
 		
 	}
+	
 
 	@Override
 	public void keyPressed(KeyEvent e) {

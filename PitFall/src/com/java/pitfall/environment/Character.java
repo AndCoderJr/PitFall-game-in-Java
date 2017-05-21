@@ -13,6 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import com.java.pitfall.constants.Constants;
+import com.java.pitfall.environment.utils.Sound;
 
 public class Character extends JFrame implements Constants {
 
@@ -36,8 +37,10 @@ public class Character extends JFrame implements Constants {
 	private int initX;
 	private int spriteWidth;
 	private int spriteHeigth;
-
+	private Sound song;
+	private int sound;
 	public Character() throws IOException{
+		song = new Sound();
 		this.rigth = true;
 		this.left = false;
 		this.x = 100;
@@ -51,6 +54,7 @@ public class Character extends JFrame implements Constants {
 		this.isMoveRigth = false;
 		this.jump = false;
 		this.fall = false;
+		this.sound = 0;
 		setSprite();
 	}
 
@@ -135,6 +139,10 @@ public class Character extends JFrame implements Constants {
 			}
 		}
 		if (jump){
+			if(sound == 0){
+				song.song("/home/bigboss/jump.wav");
+				sound++;
+			}
 			if(isMoveLeft){
 				this.spriteWidth = 256;
 				this.spriteHeigth = 512;
@@ -161,10 +169,12 @@ public class Character extends JFrame implements Constants {
 					this.jump = false;
 					this.y = 350;
 					contRigth = 0;
+					sound = 0;
 				}
 			}else{
 				this.y -= (int) 40 * GRAVITY;
 				this.numJump += (int) 40 * GRAVITY;
+				
 			}
 		}
 		
@@ -202,7 +212,9 @@ public class Character extends JFrame implements Constants {
 	}
 	
 	public void setFall(boolean fall){
+		
 		this.fall = jump;
+		
 	}
 	
 	public Rectangle playerDim(){
