@@ -33,6 +33,7 @@ public class Collisions extends Screen implements Constants{
 		Rectangle p1   =   this.player.playerDim();
 		Rectangle barril1 = this.stageOne.barril();
 		Rectangle barril2 = this.stageOne.barril2();
+		Rectangle cordaStage2 = this.stageTwo.cordaBounds();
 		if(stage1){
 			if(barril1.intersects(p1)){
 				this.cont++;
@@ -64,12 +65,13 @@ public class Collisions extends Screen implements Constants{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-
-
-
-
 			}
-
+		}else if (stage2){
+			if(cordaStage2.intersects(p1)){
+				stageTwo.setChar(true);
+				song.song("/home/bigboss/corda.wav");
+				player.corda(true,true, stageTwo.getX());
+			}
 		}
 	}
 

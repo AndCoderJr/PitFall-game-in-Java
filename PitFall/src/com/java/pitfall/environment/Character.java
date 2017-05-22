@@ -14,6 +14,8 @@ import javax.swing.JOptionPane;
 
 import com.java.pitfall.constants.Constants;
 import com.java.pitfall.environment.utils.Sound;
+import com.java.pitfall.main.Screen;
+import com.java.pitfall.stage.Stage2;
 
 public class Character extends JFrame implements Constants {
 
@@ -71,6 +73,13 @@ public class Character extends JFrame implements Constants {
 		g.drawString("X - " + this.x, 20, 300);
 		g.drawString("Y - " + this.y,300, 300);
 		g.drawImage(image, this.x, this.y,spriteWidth,this.spriteHeigth, this);
+		g.setColor(Color.black);
+		if(left){
+			//g.drawRect(this.x + 100, this.y + 20 , spriteWidth - 444 ,this.spriteHeigth - 400);
+		}else{
+			//g.drawRect(this.x + 70, this.y +  20, spriteWidth - 200 ,this.spriteHeigth - 400);
+		}
+
 
 	}
 
@@ -79,15 +88,15 @@ public class Character extends JFrame implements Constants {
 		if(isStop && !isMoveRigth && !isMoveLeft){
 			if(rigth)	{
 				path = "utils/SpriteStop.png";
-				
+
 			}
 			else if(left){
 				this.spriteWidth = 500;
 				this.spriteHeigth = 512;
 				path = "utils/left.png";
 			}
-				
-				
+
+
 		}
 
 		if(isMoveLeft){
@@ -148,18 +157,18 @@ public class Character extends JFrame implements Constants {
 				this.spriteHeigth = 512;
 				this.path = "utils/runLeft.png";
 				contRigth = 4;
-				
+
 			}
 
 			else if(isMoveRigth){
-				
+
 				this.path = "utils/runRigth.png";
 				contRigth = 4;
 			}
 
 
 			if(numJump > 120){
-				
+
 				this.y += (int) 40 * GRAVITY;
 				this.numJump += (int) 40 * GRAVITY;
 				if(numJump > 240){
@@ -174,13 +183,26 @@ public class Character extends JFrame implements Constants {
 			}else{
 				this.y -= (int) 40 * GRAVITY;
 				this.numJump += (int) 40 * GRAVITY;
-				
+
 			}
 		}
-		
-		
+
+
 	}
-	
+
+	public void corda(boolean corda, boolean mudaY,int x){
+		if(corda && mudaY){
+			this.y = 10000;
+			this.x = x;
+		}else if(!corda && mudaY && this.y == 10000){
+			this.y = 380;
+			this.jump = true;
+			move();
+			
+
+		}
+	}
+
 	public void changeStage(){
 		if(this.x > 860){
 			this.contStage++;
@@ -192,7 +214,7 @@ public class Character extends JFrame implements Constants {
 	}
 
 	public int getStage(){
-		
+
 		return contStage;
 	}
 
@@ -210,20 +232,20 @@ public class Character extends JFrame implements Constants {
 	public void setJump(boolean jump){
 		this.jump = true;
 	}
-	
+
 	public void setFall(boolean fall){
-		
+
 		this.fall = jump;
-		
+
 	}
-	
+
 	public Rectangle playerDim(){
 		if(left){
-			return (new Rectangle( this.x, this.y,30 ,this.spriteHeigth - 300));
+			return (new Rectangle( this.x + 100, this.y, spriteWidth - 444 ,this.spriteHeigth - 250));
 		}else{
-			return (new Rectangle( this.x, this.y,this.spriteWidth - 200,this.spriteHeigth - 350));
+			return (new Rectangle( this.x + 70, this.y, spriteWidth - 200 ,this.spriteHeigth - 250));
 		}
-		
-		
+
+
 	}
 }

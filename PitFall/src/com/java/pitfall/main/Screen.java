@@ -14,7 +14,7 @@ import com.java.pitfall.stage.*; //Importa fase
 
 public class Screen extends JFrame implements Constants, Runnable, KeyListener{
 	static boolean stage1;
-	private boolean stage2;
+	static boolean stage2;
 	private boolean stage3;
 	private Thread th1;
 	private DefaultStage stage;
@@ -79,8 +79,10 @@ public class Screen extends JFrame implements Constants, Runnable, KeyListener{
 			player.changeStage();
 			checkStage();
 			collisions.checkCollision();
-			if(stage2)
-				stageTwo.moveCorda();
+			if(stageTwo.getChar())
+				player.corda(true, true,stageTwo.getX());
+			else
+				player.corda(false, true,0);
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
@@ -111,6 +113,7 @@ public class Screen extends JFrame implements Constants, Runnable, KeyListener{
 		
 		
 	}
+	
 	
 
 	@Override

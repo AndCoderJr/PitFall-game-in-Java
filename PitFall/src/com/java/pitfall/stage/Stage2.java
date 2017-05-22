@@ -1,28 +1,50 @@
 package com.java.pitfall.stage;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.io.IOException;
 import java.net.URL;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+
 import com.java.pitfall.environment.utils.*;
 import com.java.pitfall.constants.Constants;
 
-public class Stage2 extends JFrame implements Constants{
+public class Stage2 extends JPanel implements Constants, Runnable{
 	private Image water;
 	private URL resource;
-	private int[] xCorda = {490,490,490,490,490,490,490,490,490,490,490,490};
-	private int[] yCorda = {175,180,200,220,240,260,280,300,320,340,360,380};
+	private URL resource2;
+	private Image charCorda;
+	//private int RectX;
+	//private int RectY;
+	private int x;
+	private int y;
+	private int xChar;
+	private int yChar;
 	private int contMove;
 	private boolean rigth;
 	private boolean left;
+	static boolean isChar;
+	private double angle;
+	private int length;
+	private Thread corda;
+	int contador;
 	public Stage2(){
-		this.contMove = 2;
+		contador = 0;
+		this.contMove = 1;
 		this.rigth = true;
 		this.left = false;
+		this.length = 250;
+		this.angle  = Math.PI / 3;
+
+		corda = new Thread(this);
+		corda.start();
+		setDoubleBuffered(true);
 	}
 
 	@Override
@@ -36,39 +58,74 @@ public class Stage2 extends JFrame implements Constants{
 			e.printStackTrace();
 		}
 		g.drawImage(water, 250, 480,480,200, this);
-		g.setColor(Color.black);
-		for(int i = 0 ; i < xCorda.length; i++){
-			g.fillRect(xCorda[i], yCorda[i], 20, 10);
 
+		//DESENHO DA CORDA!
+		g.setColor(Color.black);
+		int anchorX = 500, anchorY = 150;  //Define arco 
+		int RectX = anchorX + (int) (Math.sin(angle) * length);  //Pega a posição do x
+		int RectY= anchorY + (int) (Math.cos(angle) * length); //Pega a posição do y
+		g.drawLine(anchorX, anchorY, RectX, RectY);
+		g.setColor(new Color(12,74,28));
+		g.fillOval(anchorX - 3, anchorY - 4, 7, 7);
+		g.setColor(Color.black);
+		g.fillRect(RectX - 7, RectY - 7, 14, 14);
+		setDim(RectX - 7, RectY - 7);
+		if(isChar){
+			contador++;
+			resource2 = getClass().getResource("../environment/utils/corda.png");
+			try {
+				charCorda = ImageIO.read(resource2);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			g.drawImage(charCorda, RectX - 130, RectY - 70, 256, 300, this);
+			g.drawString(" Posição do personagem X - " + RectX, 200, 300 );
+			if(RectX == 716)
+				setChar(false);
 		}
-		
 	}
 
-	public void moveCorda(){
-		if(rigth){
-			for (int i = 0; i < xCorda.length; i++) {
-				contMove += 2;
-				xCorda[i] += (int) (i * (contMove)) * GRAVITY;
-				if(contMove >= 18 ){
-					this.rigth = false;
-					this.left = true;
-					this.contMove = 2;
-				}
+	public void run(){	//Thread para rodar a corda 
+		double angleAccel, angleVelocity = 0, dt = 0.1;
+		while (true) {
+			angleAccel = -9.81 / length * Math.sin(angle);
+			angleVelocity += angleAccel * dt;
+			angle += (angleVelocity * dt);
+			repaint();
+			try {
+				Thread.sleep(15);
+			} catch (InterruptedException ex) {
 			}
-			
-		}else if(left){
-			for (int i = 0 ; i < xCorda.length ; i++){
-				contMove += 2;
-				xCorda[i] -= (int) (i * (contMove)) * GRAVITY;
-				if(contMove >= 18 ){
-					this.left = false;
-					this.rigth = true;
-					this.contMove = 2;
-				}
-			} 
-			
 		}
+
+	}
+
+	public Dimension getPreferredSize() {
+		return new Dimension(2 * length + 50, length / 2 * 3);
+	}
+	
+	public void setChar(boolean isChar){
+		this.isChar = isChar;
+	}
+	
+	public boolean getChar(){
+		return this.isChar;
+	}
+
+	public void setDim(int x, int y){
+		this.x = x;
+		this.y = y;
+	}
+	
+	public int getX(){
+		return this.x;
+	}
+	public Rectangle cordaBounds(){
+		return (new Rectangle(this.x - 7, this.y - 7, 14, 14));
 	}
 
 }
+
+
+
 

@@ -24,13 +24,14 @@ public class Stage1 extends JFrame implements Constants {
 		super.paint(g);
 		Graphics2D gg = (Graphics2D) g;
 		gg.setColor(Color.BLACK);
-		gg.fillRect(400, 500, 150, 50); //Buraco
+		gg.fillRect(400, 500, 80, 50); //Buraco
 		gg.setColor(new Color(115,77,38));
 		gg.fillRoundRect(barrilX, 520, 50, 50, 30, 40);
 		
 		gg.setColor(new Color(115,77,38));
 		gg.fillRoundRect(barrilX + 250, 520, 50, 50, 30, 40);
-		
+		gg.setColor(Color.white);
+		gg.drawRect(420, 530, 40, 20);
 		gg.setColor(Color.black);
 		//gg.rotate(radio);
 		
@@ -52,15 +53,15 @@ public class Stage1 extends JFrame implements Constants {
 	
 	
 	public Rectangle buraco(){
-		return (new Rectangle(400, 500, 120 - CONSTANTE_COLISAO_BURACO, 50));
+		return (new Rectangle(420, 530, 40, 20));
 	}
 	
 	public Rectangle barril(){
-		return (new Rectangle(barrilX + 200, 500, 30 , 50));
+		return (new Rectangle(barrilX + 250, 520, 50, 50));
 	}
 	
 	public Rectangle barril2(){
-		return (new Rectangle(barrilX - 100, 500, 30, 50));
+		return (new Rectangle(barrilX, 520, 50, 50));
 	}
 	
 }
