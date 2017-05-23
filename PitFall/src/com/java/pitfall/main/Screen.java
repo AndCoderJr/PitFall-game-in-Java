@@ -15,11 +15,14 @@ import com.java.pitfall.stage.*; //Importa fase
 public class Screen extends JFrame implements Constants, Runnable, KeyListener{
 	static boolean stage1;
 	static boolean stage2;
-	private boolean stage3;
+	static boolean stage3;
+	static boolean stage4;
 	private Thread th1;
 	private DefaultStage stage;
 	static Stage1 stageOne;
 	static Stage2 stageTwo;
+	static Stage3 stageThree;
+	static Stage4 stageFour;
 	private Image img; //Concertar bug da tela piscando
 	private Graphics gfx;
 	static Character player;
@@ -28,7 +31,7 @@ public class Screen extends JFrame implements Constants, Runnable, KeyListener{
 	public Screen() {
 
 	}
-	
+
 	public void init() throws IOException, InterruptedException{
 		this.setTitle("Pitfall");
 		this.setSize(WIDTH_SCREEN,HEIGTH_SCREEN);
@@ -40,6 +43,7 @@ public class Screen extends JFrame implements Constants, Runnable, KeyListener{
 		this.stage1 = false;
 		this.stage2 = false;
 		this.stage3 = false;
+		this.stage4 = false;
 		img =createImage(WIDTH_SCREEN, HEIGTH_SCREEN);
 		this.points = 0;
 		collisions = new Collisions();
@@ -48,6 +52,8 @@ public class Screen extends JFrame implements Constants, Runnable, KeyListener{
 		stage = new DefaultStage();
 		stageOne = new Stage1();
 		stageTwo = new Stage2();
+		stageThree = new Stage3();
+		stageFour = new Stage4();
 		this.addKeyListener(this);
 		th1 = new Thread(this);
 		th1.start();
@@ -57,14 +63,26 @@ public class Screen extends JFrame implements Constants, Runnable, KeyListener{
 	@Override
 	public void paint(Graphics g) {
 		super.paint(gfx);
-		stage.paint(gfx); //desenha fase
+		//desenha fase
+		stage.paint(gfx); 
 		player.paint(gfx);
 		collisions.paint(gfx);
 		if(stage1){
+			player.paint(gfx);
 			stageOne.paint(gfx);
 		}else if(stage2){
+			player.paint(gfx);
 			stageTwo.paint(gfx);
+		}else if(stage3){
+			stageThree.paint(gfx);
+			System.out.println("Fase 3 !!!");
+		}else if(stage4){
+			stageFour.paint(gfx);
 		}
+
+
+
+
 		g.drawImage(img, 0, 0, this);  //Corrigir bug da tela piscando
 
 
@@ -83,6 +101,8 @@ public class Screen extends JFrame implements Constants, Runnable, KeyListener{
 				player.corda(true, true,stageTwo.getX());
 			else
 				player.corda(false, true,0);
+			if(stage3)
+				stageThree.moveFall();
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
@@ -93,28 +113,39 @@ public class Screen extends JFrame implements Constants, Runnable, KeyListener{
 		}
 
 	}
-	
-	
+
+
 
 	//Checar fase atual
 
 	public void checkStage(){
 		int stageNum = player.getStage();
+		System.out.println("Fase " + stageNum);
 		if(stageNum == 1)
 			stage1 = true;
 		else
 			stage1 = false;
-		if(stageNum == 0)
-			stage1 = false;
-		else if(stageNum == 2)
+
+		if(stageNum == 2)
 			stage2 = true;
-		else if(stageNum != 2)
+		else
 			stage2 = false;
+
+		if(stageNum == 3)
+			stage3 = true;
+
+		else 
+			stage3 = false;
 		
+		if(stageNum == 4)
+			stage4 = true;
 		
+		else
+			stage4 = false;
+
 	}
-	
-	
+
+
 
 	@Override
 	public void keyPressed(KeyEvent e) {

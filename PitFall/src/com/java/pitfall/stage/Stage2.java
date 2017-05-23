@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import com.java.pitfall.environment.utils.*;
 import com.java.pitfall.constants.Constants;
 
+import com.java.pitfall.environment.Character;
 public class Stage2 extends JPanel implements Constants, Runnable{
 	private Image water;
 	private URL resource;
@@ -58,7 +59,7 @@ public class Stage2 extends JPanel implements Constants, Runnable{
 			e.printStackTrace();
 		}
 		g.drawImage(water, 250, 480,480,200, this);
-
+		//g.fillRect(340, 520, 340, 50);
 		//DESENHO DA CORDA!
 		g.setColor(Color.black);
 		int anchorX = 500, anchorY = 150;  //Define arco 
@@ -70,7 +71,8 @@ public class Stage2 extends JPanel implements Constants, Runnable{
 		g.setColor(Color.black);
 		g.fillRect(RectX - 7, RectY - 7, 14, 14);
 		setDim(RectX - 7, RectY - 7);
-		if(isChar){
+		//Movimentação na corda!
+		if(isChar && Character.getRigth()){
 			contador++;
 			resource2 = getClass().getResource("../environment/utils/corda.png");
 			try {
@@ -81,6 +83,18 @@ public class Stage2 extends JPanel implements Constants, Runnable{
 			g.drawImage(charCorda, RectX - 130, RectY - 70, 256, 300, this);
 			g.drawString(" Posição do personagem X - " + RectX, 200, 300 );
 			if(RectX == 716)
+				setChar(false);
+		}else if(isChar && Character.getLeft()){
+			contador++;
+			resource2 = getClass().getResource("../environment/utils/cordaLeft.png");
+			try {
+				charCorda = ImageIO.read(resource2);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			g.drawImage(charCorda, RectX - 130, RectY - 70, 256, 300, this);
+			g.drawString(" Posição do personagem X - " + RectX, 200, 300 );
+			if(RectX == 285)
 				setChar(false);
 		}
 	}
@@ -121,7 +135,11 @@ public class Stage2 extends JPanel implements Constants, Runnable{
 		return this.x;
 	}
 	public Rectangle cordaBounds(){
-		return (new Rectangle(this.x - 7, this.y - 7, 14, 14));
+		return (new Rectangle(this.x - 7, this.y - 7, 25, 14));
+	}
+	
+	public Rectangle waterBounds(){
+		return(new Rectangle(340, 520, 340, 50));
 	}
 
 }

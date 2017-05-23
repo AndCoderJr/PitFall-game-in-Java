@@ -20,9 +20,9 @@ import com.java.pitfall.stage.Stage2;
 public class Character extends JFrame implements Constants {
 
 	private boolean isMoveLeft;
-	private boolean left;
+	private static boolean left;
 	private boolean isMoveRigth;
-	private boolean rigth;
+	private static boolean rigth;
 	private boolean isStop;
 	private boolean jump;
 	private boolean fall;
@@ -37,8 +37,8 @@ public class Character extends JFrame implements Constants {
 	private int contRigth;
 	private int contStage;
 	private int initX;
-	private int spriteWidth;
-	private int spriteHeigth;
+	public int spriteWidth;
+	public int spriteHeigth;
 	private Sound song;
 	private int sound;
 	public Character() throws IOException{
@@ -112,6 +112,7 @@ public class Character extends JFrame implements Constants {
 
 
 	public void move(){
+		
 		if(fall){
 			System.out.println("Caiu!");
 			this.y +=(int) 20 * GRAVITY;
@@ -148,6 +149,7 @@ public class Character extends JFrame implements Constants {
 			}
 		}
 		if (jump){
+			
 			if(sound == 0){
 				song.song("/home/bigboss/jump.wav");
 				sound++;
@@ -161,7 +163,6 @@ public class Character extends JFrame implements Constants {
 			}
 
 			else if(isMoveRigth){
-
 				this.path = "utils/runRigth.png";
 				contRigth = 4;
 			}
@@ -193,13 +194,14 @@ public class Character extends JFrame implements Constants {
 	public void corda(boolean corda, boolean mudaY,int x){
 		if(corda && mudaY){
 			this.y = 10000;
-			this.x = x;
+			this.x = 100;
+			if(x >= 700)
+				this.x = x;
+			else if(x < 600)
+				this.x = 160;
 		}else if(!corda && mudaY && this.y == 10000){
-			this.y = 380;
-			this.jump = true;
-			move();
+			this.y = 350;
 			
-
 		}
 	}
 
@@ -214,7 +216,7 @@ public class Character extends JFrame implements Constants {
 	}
 
 	public int getStage(){
-
+		System.out.println("fase -  " + contStage);
 		return contStage;
 	}
 
@@ -236,7 +238,14 @@ public class Character extends JFrame implements Constants {
 	public void setFall(boolean fall){
 
 		this.fall = jump;
-
+	}
+	
+	public static boolean getRigth(){
+		return rigth;
+	}
+	
+	public static boolean getLeft(){
+		return left;
 	}
 
 	public Rectangle playerDim(){

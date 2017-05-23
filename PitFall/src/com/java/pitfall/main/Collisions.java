@@ -22,9 +22,11 @@ import sun.audio.ContinuousAudioDataStream;
 public class Collisions extends Screen implements Constants{
 	private Sound song;
 	private int cont;
+	private int deathCont;
 	public Collisions() throws IOException, InterruptedException {
 		//super();
 		song = new Sound();
+		this.deathCont = 0;
 
 	}
 
@@ -34,6 +36,9 @@ public class Collisions extends Screen implements Constants{
 		Rectangle barril1 = this.stageOne.barril();
 		Rectangle barril2 = this.stageOne.barril2();
 		Rectangle cordaStage2 = this.stageTwo.cordaBounds();
+		Rectangle agua1 = this.stageTwo.waterBounds();
+		Rectangle fall2 = this.stageThree.fallBounds();
+		Rectangle gold = this.stageFour.goldBounds();
 		if(stage1){
 			if(barril1.intersects(p1)){
 				this.cont++;
@@ -45,33 +50,63 @@ public class Collisions extends Screen implements Constants{
 
 			if(fall.intersects(p1)){
 				this.cont++;
-
-				System.out.println("COLIDIU! - " + cont);
-				player.x -= 30;
-				player.y += (int) 50 * GRAVITY;
-
-				try {
-					Thread.sleep(150);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				player.y += (int) 400 * GRAVITY;
 				song.song("/home/bigboss/death.wav");
-				player.y = 1000000;
+				this.deathCont++;
+				//player.y += 10;
+				player.y = 580;
+
 				try {
-					Thread.sleep(150);
+					Thread.sleep(1);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+
 			}
 		}else if (stage2){
 			if(cordaStage2.intersects(p1)){
 				stageTwo.setChar(true);
 				song.song("/home/bigboss/corda.wav");
 				player.corda(true,true, stageTwo.getX());
+			}else if(agua1.intersects(p1)){
+				System.out.println("Colidiu agua");
+
+
+				song.song("/home/bigboss/death.wav");
+				this.deathCont++;
+				//player.y += 10;
+				player.y = 1000000;
+				player.spriteHeigth -= 20;
+				try {
+					Thread.sleep(1);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
 			}
+		}else if(stage3){
+			if(fall2.intersects(p1)){
+				System.out.println("Colidiu agua");
+				song.song("/home/bigboss/death.wav");
+				this.deathCont++;
+				//player.y += 10;
+				player.y = 1000000;
+				player.spriteHeigth -= 20;
+				try {
+					Thread.sleep(1);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}else if(stage4){
+			if(gold.intersects(p1)){
+				song.song("/home/bigboss/Super Mario Bros.-Coin Sound Effect-RfkcI8dhfsQ.wav");
+				stageFour.goldY = 10000;
+				System.out.println("COLIDIU!");
+			}
+
 		}
 	}
 
