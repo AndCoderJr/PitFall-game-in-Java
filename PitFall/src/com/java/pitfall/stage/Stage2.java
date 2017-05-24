@@ -81,7 +81,7 @@ public class Stage2 extends JPanel implements Constants, Runnable{
 				e.printStackTrace();
 			}
 			g.drawImage(charCorda, RectX - 130, RectY - 70, 256, 300, this);
-			g.drawString(" Posição do personagem X - " + RectX, 200, 300 );
+		
 			if(RectX == 716)
 				setChar(false);
 		}else if(isChar && Character.getLeft()){
@@ -93,8 +93,8 @@ public class Stage2 extends JPanel implements Constants, Runnable{
 				e.printStackTrace();
 			}
 			g.drawImage(charCorda, RectX - 130, RectY - 70, 256, 300, this);
-			g.drawString(" Posição do personagem X - " + RectX, 200, 300 );
-			if(RectX == 285)
+			
+			if(RectX < 300)
 				setChar(false);
 		}
 	}
@@ -140,6 +140,16 @@ public class Stage2 extends JPanel implements Constants, Runnable{
 	
 	public Rectangle waterBounds(){
 		return(new Rectangle(340, 520, 340, 50));
+	}
+	
+	public Rectangle charCordaBounds(){
+		if(isChar && Character.getRigth()){
+			return (new Rectangle(this.x, this.y, 256, 300));
+		}else if(isChar && Character.getLeft()){
+			return (new Rectangle(this.x, this.y, 256, 300));
+		}
+		
+		return (new Rectangle(0,0,0,0));
 	}
 
 }

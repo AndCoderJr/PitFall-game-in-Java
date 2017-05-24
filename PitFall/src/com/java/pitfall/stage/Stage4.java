@@ -11,15 +11,30 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 import com.java.pitfall.constants.Constants;
+import com.java.pitfall.main.Screen;
 
 public class Stage4 extends JFrame implements Constants{
 	private Image gold;
 	private URL resource;
 	public static int goldY;
+	private boolean finalGame;
+	private int rochaX;
+	private int rochaY;
+	private int contY;
+	private int contFase;
+	private boolean start;
+	public static boolean move;
 	public Stage4(){
+		this.move = false;
+		this.start = false;
+		this.contY = 1;
+		this.contFase = 0;
+		this.finalGame = false;
+		this.rochaX = 1150;
 		this.goldY = 480;
+		this.rochaY = 250;
 	}
-	
+
 	@Override
 	public void paint(Graphics g) {
 		// TODO Auto-generated method stub
@@ -35,11 +50,67 @@ public class Stage4 extends JFrame implements Constants{
 		g.drawImage(gold, 850, this.goldY, this);
 		g.drawImage(gold, 850, this.goldY - 10, this);
 		g.drawImage(gold, 845, this.goldY - 10, this);
-		
+		if(finalGame){
+			g.setColor(Color.red);
+			g.drawString("VOCE RECUPEROU O TESOURO! AGORA FUJA!", 300, 100);
+			g.setColor(Color.black);
+			g.fillOval(this.rochaX + 850, rochaY, 300, 300);
+			g.drawString("X - Rocha" + rochaX, 400, 250);
+			if(!start)
+				this.start = true;
+		}
+
 	}
-	
+
+	public void moveRocha(boolean inicioFase){
+		
+		if(!move){
+			if(contFase == 0){
+				this.rochaX = 1150;
+				this.contFase++;
+			}else{
+				if(inicioFase){
+					this.rochaX = 600;
+				}else{
+					
+				}
+				if(Screen.player.getStage() != 2){
+					this.rochaX -= 20;
+				}else
+					this.rochaX -= 8;
+
+				if(contY >= 4){
+					this.rochaY -= 3;
+					contY++;
+					if(contY >= 8)
+						contY = 0;
+				}else
+					this.rochaY += 3;
+				contY++;	
+			}
+		}
+
+
+
+	}
+
+	public void setFinal(boolean finalGame){
+		this.finalGame = finalGame;
+	}
+
+	public boolean returnFinal(){
+		return this.finalGame;
+	}
+
+	public boolean isStart(){
+		return this.start;
+	}
 	public Rectangle goldBounds(){
 		return(new Rectangle(800, this.goldY,64,64));
+	}
+
+	public Rectangle rochaBounds(){
+		return(new Rectangle(this.rochaX + 850, rochaY, 300, 300));
 	}
 
 }

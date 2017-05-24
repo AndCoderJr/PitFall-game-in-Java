@@ -39,7 +39,7 @@ public class Stage3 extends JFrame implements Constants {
 			e.printStackTrace();
 		}
 		g.setColor(Color.RED);
-		g.drawString("Width buraco " + this.widthFall*(-1), 480, 300);
+		
 		g.fillRect(700, 200,this.widthFall,200);
 		g.drawImage(water, 700, 480,this.widthFall,200, this);
 		

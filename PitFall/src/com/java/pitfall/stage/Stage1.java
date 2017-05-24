@@ -13,8 +13,13 @@ public class Stage1 extends JFrame implements Constants {
 	private int barrilX;
 	private int barrilY;
 	private int contY;
-	
+	private boolean breakRock;
+	private int yBreak;
+	private int contBreak;
 	public Stage1() {
+		this.contBreak = 0;
+		this.yBreak = 800;
+		this.breakRock = false;
 		this.contY = 0;
 		this.barrilX = 800;
 		this.barrilY = 500;
@@ -38,7 +43,6 @@ public class Stage1 extends JFrame implements Constants {
 		
 		gg.setColor(Color.black);
 		//gg.rotate(radio);
-		
 		
 		barrilMove();
 		
@@ -65,6 +69,7 @@ public class Stage1 extends JFrame implements Constants {
 	
 	
 	
+	
 	public Rectangle buraco(){
 		return (new Rectangle(420, 530, 40, 20));
 	}
@@ -76,5 +81,7 @@ public class Stage1 extends JFrame implements Constants {
 	public Rectangle barril2(){
 		return (new Rectangle(barrilX, barrilY, 60,60));
 	}
+	
+
 	
 }

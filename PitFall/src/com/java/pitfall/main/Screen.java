@@ -8,31 +8,40 @@ import java.awt.event.KeyListener;
 import java.io.IOException;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
 import com.java.pitfall.constants.*; //Importa constantes
 import com.java.pitfall.environment.Character; //Importa personagem
 import com.java.pitfall.stage.*; //Importa fase
 
 public class Screen extends JFrame implements Constants, Runnable, KeyListener{
+	static boolean stage0;
 	static boolean stage1;
 	static boolean stage2;
 	static boolean stage3;
-	static boolean stage4;
+	public static boolean stage4;
 	private Thread th1;
 	private DefaultStage stage;
 	static Stage1 stageOne;
 	static Stage2 stageTwo;
 	static Stage3 stageThree;
 	static Stage4 stageFour;
+	static Stage0 stageZero;
+	public static boolean vitoria;
 	private Image img; //Concertar bug da tela piscando
 	private Graphics gfx;
-	static Character player;
+	public static Character player;
 	private Collisions collisions;
 	public int points;
-	public Screen() {
+	private int contRocha;
+	public static int stageNum;
 
+	public Screen() {
+		
 	}
 
 	public void init() throws IOException, InterruptedException{
+		this.contRocha = 3;
 		this.setTitle("Pitfall");
 		this.setSize(WIDTH_SCREEN,HEIGTH_SCREEN);
 		this.setLocationRelativeTo(null);
@@ -40,10 +49,12 @@ public class Screen extends JFrame implements Constants, Runnable, KeyListener{
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setVisible(true);
 		//Corrigir bug da tela piscando
+		this.stage0 = false;
 		this.stage1 = false;
 		this.stage2 = false;
 		this.stage3 = false;
 		this.stage4 = false;
+		this.vitoria = false;
 		img =createImage(WIDTH_SCREEN, HEIGTH_SCREEN);
 		this.points = 0;
 		collisions = new Collisions();
@@ -67,16 +78,26 @@ public class Screen extends JFrame implements Constants, Runnable, KeyListener{
 		stage.paint(gfx); 
 		player.paint(gfx);
 		collisions.paint(gfx);
+		if(stageNum < 1 && vitoria){
+			gfx.drawString("OBRIGADO POR JOGAR! FIM DE JOGO!  Aperte 'F' para finalizar", 200, 100);
+			player.vitoriaGame();
+			//JOptionPane.showMessageDialog(null, "Fim de jogo! obrigado por jogar!");
+		}
 		if(stage1){
-			player.paint(gfx);
 			stageOne.paint(gfx);
+			if(stageFour.returnFinal() && stageNum != 0)
+				stageFour.paint(gfx);
 		}else if(stage2){
-			player.paint(gfx);
+
 			stageTwo.paint(gfx);
+			if(stageFour.returnFinal() && stageNum != 0)
+				stageFour.paint(gfx);
 		}else if(stage3){
 			stageThree.paint(gfx);
 			System.out.println("Fase 3 !!!");
-		}else if(stage4){
+			if(stageFour.returnFinal() && stageNum != 0 )
+				stageFour.paint(gfx);
+		}else if((stage4 || stageFour.returnFinal()) && stageNum != 0 ){
 			stageFour.paint(gfx);
 		}
 
@@ -94,15 +115,61 @@ public class Screen extends JFrame implements Constants, Runnable, KeyListener{
 			repaint();
 			player.move();
 			player.setSprite();
-			player.changeStage();
+			if(!vitoria || stageNum > 0){
+				player.changeStage();
+			}
+			
 			checkStage();
-			collisions.checkCollision();
-			if(stageTwo.getChar())
-				player.corda(true, true,stageTwo.getX());
-			else
-				player.corda(false, true,0);
-			if(stage3)
+			
+
+			if(stage1 && contRocha < 2 && stageNum != 0){
+
+				if(stageFour.returnFinal() && contRocha == 1 && stageFour.isStart()){
+					stageFour.moveRocha(true);
+					this.contRocha--;
+				}else{
+					stageFour.moveRocha(false);
+				}
+			}
+
+			if(stage2){
+				if(stageFour.returnFinal() && contRocha == 2 && stageFour.isStart()){
+					System.out.println("FUNCIONEI OLHA OLHA!");
+					stageFour.moveRocha(true);
+					this.contRocha--;
+				}else{
+					stageFour.moveRocha(false);
+				}
+				if(stageTwo.getChar())
+					player.corda(true, true,stageTwo.getX());
+				else
+					player.corda(false, true,0);	
+			}	
+			
+			if(stage3){
 				stageThree.moveFall();
+				if(stageFour.returnFinal() && contRocha == 3 && stageFour.isStart()){
+					stageFour.moveRocha(true);
+					this.contRocha--;
+				}else{
+					stageFour.moveRocha(false);
+				}
+
+			}
+
+			else if(stage4 && stageFour.returnFinal()){
+			//	player.finalAction();
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				stageFour.moveRocha(false);
+
+			}
+			collisions.checkCollision();
+
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
@@ -119,8 +186,14 @@ public class Screen extends JFrame implements Constants, Runnable, KeyListener{
 	//Checar fase atual
 
 	public void checkStage(){
-		int stageNum = player.getStage();
+		stageNum = player.getStage();
 		System.out.println("Fase " + stageNum);
+
+		if(stageNum == 0)
+			stage0 = true;
+		else
+			stage0 = false;
+
 		if(stageNum == 1)
 			stage1 = true;
 		else
@@ -136,32 +209,40 @@ public class Screen extends JFrame implements Constants, Runnable, KeyListener{
 
 		else 
 			stage3 = false;
-		
+
 		if(stageNum == 4)
 			stage4 = true;
-		
-		else
-			stage4 = false;
 
+		else if(!stageFour.returnFinal())
+			stage4 = false;
+		else
+			stage4 = true;
 	}
 
 
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if(e.getKeyCode() == e.VK_RIGHT){
-			player.setRigth(true);
+		
+			if(e.getKeyCode() == e.VK_RIGHT){
+				player.setRigth(true);
+			}
+
+			if(e.getKeyCode() == e.VK_LEFT){
+				player.setLeft(true);
+			}
+
+			if(e.getKeyCode() == e.VK_SPACE){
+				player.setJump(true);
+			}
+			
+			if (e.getKeyCode() == e.VK_F && vitoria){
+				player.end();
+			}
 		}
 
-		if(e.getKeyCode() == e.VK_LEFT){
-			player.setLeft(true);
-		}
 
-		if(e.getKeyCode() == e.VK_SPACE){
-			player.setJump(true);
-		}
-
-	}
+	
 
 	@Override
 	public void keyReleased(KeyEvent e) {

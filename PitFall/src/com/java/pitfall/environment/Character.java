@@ -23,6 +23,7 @@ public class Character extends JFrame implements Constants {
 	private static boolean left;
 	private boolean isMoveRigth;
 	private static boolean rigth;
+	private boolean stage0;
 	private boolean isStop;
 	private boolean jump;
 	private boolean fall;
@@ -39,10 +40,16 @@ public class Character extends JFrame implements Constants {
 	private int initX;
 	public int spriteWidth;
 	public int spriteHeigth;
+	private int finalJogo;
 	private Sound song;
 	private int sound;
+	private boolean end;
+	private int finalGame;
 	public Character() throws IOException{
+		this.finalGame = 0;
+		this.end = false;
 		song = new Sound();
+		this.finalJogo = 0;
 		this.rigth = true;
 		this.left = false;
 		this.x = 100;
@@ -56,6 +63,7 @@ public class Character extends JFrame implements Constants {
 		this.isMoveRigth = false;
 		this.jump = false;
 		this.fall = false;
+		this.stage0 = false;
 		this.sound = 0;
 		setSprite();
 	}
@@ -70,23 +78,28 @@ public class Character extends JFrame implements Constants {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		g.drawString("X - " + this.x, 20, 300);
-		g.drawString("Y - " + this.y,300, 300);
+
 		g.drawImage(image, this.x, this.y,spriteWidth,this.spriteHeigth, this);
-		g.setColor(Color.black);
-		if(left){
-			//g.drawRect(this.x + 100, this.y + 20 , spriteWidth - 444 ,this.spriteHeigth - 400);
+		/*if(left){
+			g.drawRect(this.x + 100, this.y, spriteWidth - 444 ,this.spriteHeigth - 250);
 		}else{
-			//g.drawRect(this.x + 70, this.y +  20, spriteWidth - 200 ,this.spriteHeigth - 400);
-		}
+			g.drawRect( this.x + 70, this.y, spriteWidth - 200 ,this.spriteHeigth - 250);
+		}*/
+		g.setColor(Color.black);
+
 
 
 	}
 
 
 	public void setSprite(){
+		if(end){
+			this.path = "utils/vitoria.png";
+		}
 		if(isStop && !isMoveRigth && !isMoveLeft){
 			if(rigth)	{
+				this.spriteWidth = 256;
+				this.spriteHeigth = 512;
 				path = "utils/SpriteStop.png";
 
 			}
@@ -112,7 +125,7 @@ public class Character extends JFrame implements Constants {
 
 
 	public void move(){
-		
+
 		if(fall){
 			System.out.println("Caiu!");
 			this.y +=(int) 20 * GRAVITY;
@@ -149,9 +162,9 @@ public class Character extends JFrame implements Constants {
 			}
 		}
 		if (jump){
-			
+
 			if(sound == 0){
-				song.song("/home/bigboss/jump.wav");
+				song.song("src/com/java/pitfall/environment/utils/songs/jump.wav");
 				sound++;
 			}
 			if(isMoveLeft){
@@ -163,6 +176,8 @@ public class Character extends JFrame implements Constants {
 			}
 
 			else if(isMoveRigth){
+				this.spriteWidth = 256;
+				this.spriteHeigth = 512;
 				this.path = "utils/runRigth.png";
 				contRigth = 4;
 			}
@@ -201,20 +216,46 @@ public class Character extends JFrame implements Constants {
 				this.x = 160;
 		}else if(!corda && mudaY && this.y == 10000){
 			this.y = 350;
-			
+
 		}
 	}
 
 	public void changeStage(){
-		if(this.x > 860){
+		if(contStage == 0){
+			stage0 = true;
+		}else{
+			stage0 = false;
+		}
+		if(this.x > 860 && contStage != 4){
 			this.contStage++;
 			this.x = this.initX - 20;
-		}if (this.x < -100){
+		}else if(this.x < -100 && stage0){
+			this.x = -100;
+		}
+		else if (this.x < -100 && !stage0){
 			this.contStage--;
+			this.x = 850;
+		}else if(this.x > 860 && contStage > 3){
 			this.x = 850;
 		}
 	}
 
+	public void end(){
+		JOptionPane.showMessageDialog(null, "Fim");
+		System.exit(0);
+	}
+
+	public void vitoriaGame(){
+		if(this.x > 860){
+			this.x = 850;
+		}else if(this.x < -100){
+			this.x = -100;
+		}
+	}
+
+		
+			
+	
 	public int getStage(){
 		System.out.println("fase -  " + contStage);
 		return contStage;
@@ -239,11 +280,11 @@ public class Character extends JFrame implements Constants {
 
 		this.fall = jump;
 	}
-	
+
 	public static boolean getRigth(){
 		return rigth;
 	}
-	
+
 	public static boolean getLeft(){
 		return left;
 	}
